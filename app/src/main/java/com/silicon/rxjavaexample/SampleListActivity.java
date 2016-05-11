@@ -32,4 +32,5 @@ public class SampleListActivity extends AppCompatActivity {
         }
 
     }
+
 }
