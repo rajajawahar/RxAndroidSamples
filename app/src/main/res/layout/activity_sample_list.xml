@@ -48,6 +48,14 @@
                 android:text="CombineLatest"
                 android:textAllCaps="false" />
 
+            <Button
+                android:id="@+id/double_binding"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="operation"
+                android:text="Double Binding"
+                android:textAllCaps="false" />
+
         </LinearLayout>
 
     </ScrollView>
