@@ -55,9 +55,9 @@ public class CombineLatestActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_combine_latest);
         ButterKnife.bind(this);
-        usernameObserver = RxTextView.textChanges(username).skip(1);
-        mobilenoObserver = RxTextView.textChanges(mobileno).skip(1);
-        emailIdObserver = RxTextView.textChanges(emailId).skip(1);
+        usernameObserver = RxTextView.textChanges(username);
+        mobilenoObserver = RxTextView.textChanges(mobileno);
+        emailIdObserver = RxTextView.textChanges(emailId);
         combineLatestEvents();
 
     }
@@ -112,7 +112,6 @@ public class CombineLatestActivity extends AppCompatActivity {
 
         @Override
         public void onNext(Boolean formValid) {
-
             if (formValid) {
                 btnvalidator.setBackgroundColor(ContextCompat.getColor(CombineLatestActivity.this, android.R.color.black));
             } else {
