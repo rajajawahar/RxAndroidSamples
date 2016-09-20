@@ -212,5 +212,4 @@ public class OperatorsActivity extends AppCompatActivity {
         });
     }
 
-
 }
