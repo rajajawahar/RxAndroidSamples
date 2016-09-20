@@ -29,6 +29,7 @@
             android:name=".SampleListActivity"
             android:theme="@style/AppTheme.NoActionBar">
 
+
         </activity>
         <activity android:name=".CombineLatestActivity"></activity>
     </application>

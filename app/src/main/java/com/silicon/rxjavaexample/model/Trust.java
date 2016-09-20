@@ -38,4 +38,14 @@ public class Trust {
     public void setOfficiaEmail(String officiaEmail) {
         OfficiaEmail = officiaEmail;
     }
+
+    @Override
+    public String toString() {
+        return "Trust{" +
+                "id=" + id +
+                ", facebookConnection='" + facebookConnection + '\'' +
+                ", linkedInConnection='" + linkedInConnection + '\'' +
+                ", OfficiaEmail='" + OfficiaEmail + '\'' +
+                '}';
+    }
 }

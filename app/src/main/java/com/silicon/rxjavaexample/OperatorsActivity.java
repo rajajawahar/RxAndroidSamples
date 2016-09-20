@@ -13,8 +13,8 @@ import java.util.List;
 
 import rx.Observable;
 import rx.Observer;
-import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.functions.Func0;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -27,33 +27,7 @@ public class OperatorsActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_operators);
-//        Observable.concat(getCustomerFromLocal(), getCustomerFromOnline())
-//                .first(new Func1<Customer, Boolean>() {
-//                    @Override
-//                    public Boolean call(Customer customer) {
-//                        return customer == null;
-//                    }
-//                })
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new Observer<Customer>() {
-//                    @Override
-//                    public void onCompleted() {
-//
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//                        Log.d(TAG, "onError() called with: " + "e = [" + e + "]");
-//                    }
-//
-//                    @Override
-//                    public void onNext(Customer customer) {
-//                        Log.d(TAG, "onNext() called with: " + "customer = [" + customer + "]");
-//                    }
-//                });
-//        getDatabasedonLocal();
-        getMultipleCalls();
+
 
     }
 
@@ -78,6 +52,63 @@ public class OperatorsActivity extends AppCompatActivity {
                 return customer;
             }
         });
+    }
+
+
+    private void concatOperations() {
+        Observable.concat(getCustomerFromLocal(), getSecondCustomer())
+                .first(new Func1<Customer, Boolean>() {
+                    @Override
+                    public Boolean call(Customer customer) {
+                        return customer == null;
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Customer>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.d(TAG, "onError() called with: " + "e = [" + e + "]");
+                    }
+
+                    @Override
+                    public void onNext(Customer customer) {
+                        Log.d(TAG, "onNext() called with: " + "customer = [" + customer + "]");
+                    }
+                });
+    }
+
+    private void mergerOperations() {
+        Observable.merge(getFirstCustomer(), getSecondCustomer(), getThirdCustomer())
+                .toList().flatMap(new Func1<List<Customer>, Observable<List<Customer>>>() {
+            @Override
+            public Observable<List<Customer>> call(List<Customer> customers) {
+                return getCustomerWithTrust(customers);
+            }
+        }).flatMapIterable(new Func1<List<Customer>, Iterable<Customer>>() {
+            @Override
+            public Iterable<Customer> call(List<Customer> customers) {
+                return customers;
+            }
+        }).subscribe(new Action1<Customer>() {
+            @Override
+            public void call(Customer customer) {
+                Log.d(TAG, "call: " + customer.getTrust().toString());
+
+            }
+        }, new Action1<Throwable>() {
+            @Override
+            public void call(Throwable throwable) {
+                Log.d(TAG, "call: " + throwable.getLocalizedMessage());
+
+            }
+        });
+
     }
 
     private Observable<Customer> getSecondCustomer() {
@@ -135,43 +166,12 @@ public class OperatorsActivity extends AppCompatActivity {
     }
 
 
-    private void getDatabasedonLocal() {
-        Observable.concat(getCustomerFromLocal(), getFirstCustomer())
-                .first(new Func1<Customer, Boolean>() {
-                    @Override
-                    public Boolean call(Customer customer) {
-                        return customer != null;
-                    }
-
-                })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread()).
-                subscribe(new Observer<Customer>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.d(TAG, "onError() called with: " + "e = [" + e + "]");
-
-                    }
-
-                    @Override
-                    public void onNext(Customer customer) {
-                        Log.d(TAG, "onNext() called with: " + "customer = [" + customer + "]");
-                    }
-                });
-    }
-
-
     private void getMultipleCalls() {
         Observable.concat(getFirstCustomer(), getSecondCustomer(), getThirdCustomer()).
                 filter(new Func1<Customer, Boolean>() {
                     @Override
                     public Boolean call(Customer customer) {
-                        return customer.getEmailId().equalsIgnoreCase("mohamedraja_77@yahoo.com");
+                        return customer.getEmailId().equalsIgnoreCase("mohamedraja_77@yahoo.com") && customer.getId() == 4;
                     }
                 })
                 .toList()
@@ -194,7 +194,23 @@ public class OperatorsActivity extends AppCompatActivity {
     }
 
 
+    public Observable<List<Customer>> getCustomerWithTrust(final List<Customer> customers) {
+        return Observable.fromCallable(new Func0<List<Customer>>() {
+            @Override
+            public List<Customer> call() {
+                List<Customer> myCustomers1 = new ArrayList<Customer>(customers.size());
+                for (Customer customer : customers) {
+                    customer.getTrust().setFacebookConnection("200");
+                    customer.getTrust().setLinkedInConnection("500");
+                    customer.getTrust().setOfficiaEmail("rj.orgware@gmail.com");
+                    customer.getTrust().setId(1);
+                    myCustomers1.add(customer);
 
+                }
+                return myCustomers1;
+            }
+        });
+    }
 
 
 }

@@ -11,6 +11,8 @@ import butterknife.ButterKnife;
 public class SampleListActivity extends AppCompatActivity {
 
 
+    private static final String TAG = SampleListActivity.class.getSimpleName();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,5 +34,15 @@ public class SampleListActivity extends AppCompatActivity {
         }
 
     }
+
+//    private void sgaga() {
+//
+//        MathObservable.averageInteger(Observable.just(1, 2, 3, 4)).subscribe(new Action1<Integer>() {
+//            @Override
+//            public void call(Integer integer) {
+//                Log.d(TAG, "call: " + integer);
+//            }
+//        });
+//    }
 
 }

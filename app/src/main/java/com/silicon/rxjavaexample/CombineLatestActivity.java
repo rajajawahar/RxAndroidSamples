@@ -3,6 +3,7 @@ package com.silicon.rxjavaexample;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -15,7 +16,9 @@ import butterknife.ButterKnife;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
+import rx.functions.Action1;
 import rx.functions.Func3;
+import rx.observables.MathObservable;
 
 import static android.text.TextUtils.isEmpty;
 
@@ -25,6 +28,7 @@ import static android.text.TextUtils.isEmpty;
 public class CombineLatestActivity extends AppCompatActivity {
 
 
+    private static final String TAG = CombineLatestActivity.class.getSimpleName();
     @BindView(R.id.username)
     EditText username;
     @BindView(R.id.mobileno)
@@ -120,5 +124,8 @@ public class CombineLatestActivity extends AppCompatActivity {
 
         }
     };
+
+
+
 }
 
