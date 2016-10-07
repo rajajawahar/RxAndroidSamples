@@ -3,11 +3,9 @@ package com.silicon.rxjavaexample;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
-
-import com.jakewharton.rxbinding.widget.RxTextView;
+import android.widget.LinearLayout;
 
 import java.util.regex.Pattern;
 
@@ -16,9 +14,7 @@ import butterknife.ButterKnife;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
-import rx.functions.Action1;
 import rx.functions.Func3;
-import rx.observables.MathObservable;
 
 import static android.text.TextUtils.isEmpty;
 
@@ -36,7 +32,9 @@ public class CombineLatestActivity extends AppCompatActivity {
     @BindView(R.id.emailId)
     EditText emailId;
     @BindView(R.id.validate_btn)
-    Button btnvalidator;
+    Button validateBtn;
+    @BindView(R.id.email_login_form)
+    LinearLayout emailLoginForm;
 
 
     private Observable<CharSequence> usernameObserver,
@@ -59,9 +57,6 @@ public class CombineLatestActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_combine_latest);
         ButterKnife.bind(this);
-        usernameObserver = RxTextView.textChanges(username);
-        mobilenoObserver = RxTextView.textChanges(mobileno);
-        emailIdObserver = RxTextView.textChanges(emailId);
         combineLatestEvents();
 
     }
@@ -124,7 +119,6 @@ public class CombineLatestActivity extends AppCompatActivity {
 
         }
     };
-
 
 
 }

@@ -9,7 +9,9 @@ import android.widget.Toast;
 
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.jakewharton.rxbinding.widget.TextViewTextChangeEvent;
+import com.silicon.rxjavaexample.model.Customer;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
@@ -43,6 +45,8 @@ public class DebounceActivity extends AppCompatActivity {
                     }
                 }).observeOn(AndroidSchedulers.mainThread());
         textViewTextChangeEventObservable.subscribe(_getSearchObserver());
+
+
 
     }
 
@@ -90,12 +94,9 @@ public class DebounceActivity extends AppCompatActivity {
 
     private void removingEvenNumbers() {
         Observable.just(1, 2, 3, 4, 5, 6) // add more numbers
-                .filter(new Func1<Integer, Boolean>() {
-                    @Override
-                    public Boolean call(Integer integer) {
-                        int value = integer % 2;
-                        return value == 1;
-                    }
+                .filter(integer -> {
+                    int value = integer % 2;
+                    return value == 1;
                 })
                 .subscribe(new Subscriber<Integer>() {
                     @Override
@@ -113,6 +114,9 @@ public class DebounceActivity extends AppCompatActivity {
                     }
                 });
     }
+
+
+
 
 
 }

@@ -9,6 +9,9 @@ public class Customer {
     public String address;
     public Trust trust;
 
+    public Customer() {
+    }
+
     public int getId() {
         return id;
     }
@@ -54,6 +57,15 @@ public class Customer {
     }
 
     public void setTrust(Trust trust) {
+        this.trust = trust;
+    }
+
+    public Customer(int id, String name, String emailId, String phoneNo, String address, Trust trust) {
+        this.id = id;
+        this.name = name;
+        this.emailId = emailId;
+        this.phoneNo = phoneNo;
+        this.address = address;
         this.trust = trust;
     }
 }

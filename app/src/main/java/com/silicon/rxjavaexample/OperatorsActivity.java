@@ -10,24 +10,24 @@ import com.silicon.rxjavaexample.model.Trust;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import rx.Observable;
-import rx.Observer;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func0;
 import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 public class OperatorsActivity extends AppCompatActivity {
 
     private static final String TAG = OperatorsActivity.class.getSimpleName();
 
+    private String thefirstcalculation;
+
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_operators);
-
 
     }
 
@@ -56,34 +56,11 @@ public class OperatorsActivity extends AppCompatActivity {
 
 
     private void concatOperations() {
-        Observable.concat(getCustomerFromLocal(), getSecondCustomer())
-                .first(new Func1<Customer, Boolean>() {
-                    @Override
-                    public Boolean call(Customer customer) {
-                        return customer == null;
-                    }
-                })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Customer>() {
-                    @Override
-                    public void onCompleted() {
 
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.d(TAG, "onError() called with: " + "e = [" + e + "]");
-                    }
-
-                    @Override
-                    public void onNext(Customer customer) {
-                        Log.d(TAG, "onNext() called with: " + "customer = [" + customer + "]");
-                    }
-                });
     }
 
     private void mergerOperations() {
+
         Observable.merge(getFirstCustomer(), getSecondCustomer(), getThirdCustomer())
                 .toList().flatMap(new Func1<List<Customer>, Observable<List<Customer>>>() {
             @Override
@@ -107,6 +84,49 @@ public class OperatorsActivity extends AppCompatActivity {
                 Log.d(TAG, "call: " + throwable.getLocalizedMessage());
 
             }
+        });
+
+
+    }
+
+    private void getIterList(Observable<List<Customer>> customerList) {
+        customerList.flatMapIterable(new Func1<List<Customer>, Iterable<Customer>>() {
+            @Override
+            public Iterable<Customer> call(List<Customer> customers) {
+                return customers;
+            }
+        }).map(new Func1<Customer, Trust>() {
+            @Override
+            public Trust call(Customer customer) {
+                return customer.getTrust();
+            }
+        }).toList().subscribe(trusts -> {
+
+        }, new Action1<Throwable>() {
+            @Override
+            public void call(Throwable throwable) {
+
+            }
+        });
+    }
+
+
+    private Observable<List<Customer>> getCustomerList() {
+
+        return Observable.fromCallable((Func0<List<Customer>>) () -> {
+
+            Trust trust = new Trust();
+            trust.setFacebookConnection("gagag");
+            trust.setId(1);
+            trust.setLinkedInConnection("gagag");
+            trust.setOfficiaEmail("gaga");
+            List<Customer> customers = new ArrayList<Customer>();
+            customers.add(new Customer(1, "name", "rajajawahar77@gmail.com", "9994267918", "klanngag", trust));
+            customers.add(new Customer(1, "name", "rajajawahar77@gmail.com", "9994267918", "klanngag", trust));
+            customers.add(new Customer(1, "name", "rajajawahar77@gmail.com", "9994267918", "klanngag", trust));
+            customers.add(new Customer(1, "name", "rajajawahar77@gmail.com", "9994267918", "klanngag", trust));
+            customers.add(new Customer(1, "name", "rajajawahar77@gmail.com", "9994267918", "klanngag", trust));
+            return customers;
         });
 
     }
@@ -167,30 +187,19 @@ public class OperatorsActivity extends AppCompatActivity {
 
 
     private void getMultipleCalls() {
-        Observable.concat(getFirstCustomer(), getSecondCustomer(), getThirdCustomer()).
-                filter(new Func1<Customer, Boolean>() {
-                    @Override
-                    public Boolean call(Customer customer) {
-                        return customer.getEmailId().equalsIgnoreCase("mohamedraja_77@yahoo.com") && customer.getId() == 4;
-                    }
-                })
-                .toList()
-                .subscribe(new Observer<List<Customer>>() {
-                    @Override
-                    public void onCompleted() {
+//        Observable.concat(getFirstCustomer(), getSecondCustomer(), getThirdCustomer()).filter(new Predicate<Customer>() {
+//            @Override
+//            public boolean test(Customer customer) throws Exception {
+//                return customer.getEmailId().equalsIgnoreCase("mohamedraja_77@yahoo.com") && customer.getId() == 4;
+//            }
+//        }).toList().subscribe(customers ->
+//
+//                        Log.d(TAG, "onNext: " + customers.size()),
+//
+//                throwable -> {
+//
+//                });
 
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(List<Customer> customers) {
-                        Log.d(TAG, "onNext: " + customers.size());
-                    }
-                });
     }
 
 
@@ -211,5 +220,54 @@ public class OperatorsActivity extends AppCompatActivity {
             }
         });
     }
+
+
+//    basic difference between Concat and Flatmap is ordering the Elements
+
+    private Observable<List<Customer>> getCustomerFromFlatMap() {
+
+
+        return Observable.fromCallable(new Callable<List<Customer>>() {
+            @Override
+            public List<Customer> call() throws Exception {
+                List<Customer> customers = new ArrayList<Customer>();
+                return customers;
+            }
+        }).flatMapIterable(new Func1<List<Customer>, Iterable<Customer>>() {
+            @Override
+            public Iterable<Customer> call(List<Customer> customers) {
+                return customers;
+            }
+        }).filter(new Func1<Customer, Boolean>() {
+            @Override
+            public Boolean call(Customer customer) {
+                return customer.address != null;
+            }
+        }).toList();
+    }
+
+
+    private Observable<List<Customer>> getCustomerFromConcatMap() {
+
+
+        return Observable.fromCallable(new Callable<List<Customer>>() {
+            @Override
+            public List<Customer> call() throws Exception {
+                List<Customer> customers = new ArrayList<Customer>();
+                return customers;
+            }
+        }).concatMapIterable(new Func1<List<Customer>, Iterable<Customer>>() {
+            @Override
+            public Iterable<Customer> call(List<Customer> customers) {
+                return customers;
+            }
+        }).filter(new Func1<Customer, Boolean>() {
+            @Override
+            public Boolean call(Customer customer) {
+                return customer.address != null;
+            }
+        }).toList();
+    }
+
 
 }

@@ -11,7 +11,11 @@ import android.widget.Toast;
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Currency;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -40,17 +44,15 @@ public class WidgetsActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ButterKnife.bind(this);
+        printValues();
 
 
         RxTextView.textChangeEvents(editText).subscribe(textViewTextChangeEvent -> {
 
             onNewTextChange(textViewTextChangeEvent.text());
         });
-        RxView.clicks(button).subscribe(new Action1<Object>() {
-            @Override
-            public void call(Object o) {
-                Log.d("vssbs", "submit button clicked!");
-            }
+        RxView.clicks(button).subscribe(o -> {
+            Log.d("vssbs", "submit button clicked!");
         });
 
         strings.clear();
@@ -64,7 +66,6 @@ public class WidgetsActivity extends AppCompatActivity {
                 return strings;
             }
         }).map(s -> {
-            Log.d(TAG, "call: " + s);
             return s;
         });
     }
@@ -74,5 +75,19 @@ public class WidgetsActivity extends AppCompatActivity {
         Toast.makeText(WidgetsActivity.this, charSequence, Toast.LENGTH_SHORT).show();
     }
 
+
+    private void printValues() {
+//        NumberFormat df = NumberFormat.getCurrencyInstance();
+//        dfs.setCurrencySymbol("USD ");
+//        dfs.setGroupingSeparator('.');
+//        dfs.setMonetaryDecimalSeparator('.');
+//        ((DecimalFormat) df).setDecimalFormatSymbols(dfs);
+//        Log.d(TAG, "printValues: " + df.format(34343.35353));
+        Currency currency = Currency.getInstance("USD");
+        DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
+        decimalFormat.setCurrency(currency);
+        Log.d(TAG, "printValues: " + decimalFormat.format(35525.15151));
+        Log.d(TAG, "printValues: " + currency.getSymbol());
+    }
 
 }
