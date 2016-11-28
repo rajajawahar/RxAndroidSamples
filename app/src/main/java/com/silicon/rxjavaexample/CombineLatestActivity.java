@@ -111,11 +111,7 @@ public class CombineLatestActivity extends AppCompatActivity {
 
         @Override
         public void onNext(Boolean formValid) {
-            if (formValid) {
-                btnvalidator.setBackgroundColor(ContextCompat.getColor(CombineLatestActivity.this, android.R.color.black));
-            } else {
-                btnvalidator.setBackgroundColor(ContextCompat.getColor(CombineLatestActivity.this, android.R.color.holo_blue_bright));
-            }
+
 
         }
     };

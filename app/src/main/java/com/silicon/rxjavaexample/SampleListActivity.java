@@ -4,9 +4,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 
 import butterknife.ButterKnife;
+import rx.Observable;
+import rx.functions.Action1;
+import rx.observables.MathObservable;
 
 public class SampleListActivity extends AppCompatActivity {
 
@@ -31,18 +35,21 @@ public class SampleListActivity extends AppCompatActivity {
             case R.id.combine_latest:
                 startActivity(new Intent(this, CombineLatestActivity.class));
                 break;
+            case R.id.average_sum:
+                sgaga();
+                break;
         }
 
     }
 
-//    private void sgaga() {
-//
-//        MathObservable.averageInteger(Observable.just(1, 2, 3, 4)).subscribe(new Action1<Integer>() {
-//            @Override
-//            public void call(Integer integer) {
-//                Log.d(TAG, "call: " + integer);
-//            }
-//        });
-//    }
+    private void sgaga() {
+
+        MathObservable.max(Observable.just(1, 2, 3, 4)).subscribe(new Action1<Integer>() {
+            @Override
+            public void call(Integer integer) {
+                Log.d(TAG, "call: " + integer);
+            }
+        });
+    }
 
 }

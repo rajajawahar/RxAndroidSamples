@@ -56,6 +56,14 @@
                 android:text="Double Binding"
                 android:textAllCaps="false" />
 
+            <Button
+                android:id="@+id/average_sum"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="operation"
+                android:text="MathObservable"
+                android:textAllCaps="false" />
+
         </LinearLayout>
 
     </ScrollView>

@@ -1,6 +1,7 @@
 package com.silicon.rxjavaexample;
 
 import android.os.Bundle;
+import android.support.annotation.IntegerRes;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -19,6 +20,7 @@ import rx.Observer;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
+import rx.observables.MathObservable;
 
 public class DebounceActivity extends AppCompatActivity {
 
@@ -33,8 +35,6 @@ public class DebounceActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         mSearchBox = (EditText) findViewById(R.id.editText);
-
-
         Observable<TextViewTextChangeEvent> textViewTextChangeEventObservable =
                 RxTextView.textChangeEvents(mSearchBox).
                         debounce(5000, TimeUnit.MILLISECONDS).filter(new Func1<TextViewTextChangeEvent, Boolean>() {
@@ -45,7 +45,6 @@ public class DebounceActivity extends AppCompatActivity {
                     }
                 }).observeOn(AndroidSchedulers.mainThread());
         textViewTextChangeEventObservable.subscribe(_getSearchObserver());
-
 
 
     }
@@ -113,10 +112,27 @@ public class DebounceActivity extends AppCompatActivity {
                         System.out.println("onNext: " + value);
                     }
                 });
+        MathObservable.averageInteger(getInteger()).subscribe(new Observer<Integer>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(Integer integer) {
+
+            }
+        });
     }
 
-
-
+    private Observable<Integer> getInteger() {
+        return Observable.just(1, 2, 3, 4, 5);
+    }
 
 
 }

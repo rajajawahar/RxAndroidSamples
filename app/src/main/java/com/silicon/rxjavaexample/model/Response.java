@@ -6,8 +6,6 @@ package com.silicon.rxjavaexample.model;
 
 public class Response {
 
-    @com.google.gson.annotations.SerializedName("type")
     public String type;
-    @com.google.gson.annotations.SerializedName("properties")
     public Properties properties;
 }
