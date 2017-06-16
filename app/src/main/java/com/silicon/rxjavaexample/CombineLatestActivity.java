@@ -70,32 +70,29 @@ public class CombineLatestActivity extends AppCompatActivity {
 
     private void combineLatestEvents() {
         subscription = Observable.combineLatest(usernameObserver, mobilenoObserver, emailIdObserver,
-                new Func3<CharSequence, CharSequence, CharSequence, Boolean>() {
-                    @Override
-                    public Boolean call(CharSequence newUserName, CharSequence newMobileNo, CharSequence newEmailId) {
-                        boolean usernameValid = !isEmpty(newUserName);
-                        if (!usernameValid) {
-                            username.setError("Invalid UserName!");
-                        }
+            (newUserName, newMobileNo, newEmailId) -> {
+                boolean usernameValid = !isEmpty(newUserName);
+                if (!usernameValid) {
+                    username.setError("Invalid UserName!");
+                }
 
-                        boolean mobileNoValid = !isEmpty(newMobileNo);
-                        if (mobileNoValid) {
-                            int num = Integer.parseInt(newMobileNo.toString());
-                            mobileNoValid = num > 0 && num <= 100;
-                        }
-                        if (!mobileNoValid) {
-                            mobileno.setError("Invalid MobileNo!");
-                        }
+                boolean mobileNoValid = !isEmpty(newMobileNo);
+                if (mobileNoValid) {
+                    int num = Integer.parseInt(newMobileNo.toString());
+                    mobileNoValid = num > 0 && num <= 100;
+                }
+                if (!mobileNoValid) {
+                    mobileno.setError("Invalid MobileNo!");
+                }
 
-                        boolean emailID = !isEmpty(newEmailId) &&
-                                EMAIL_ADDRESS.matcher(newEmailId).matches();
-                        if (!emailID) {
-                            emailId.setError("Invalid Email Address!");
-                        }
+                boolean emailID = !isEmpty(newEmailId) &&
+                        EMAIL_ADDRESS.matcher(newEmailId).matches();
+                if (!emailID) {
+                    emailId.setError("Invalid Email Address!");
+                }
 
-                        return usernameValid && mobileNoValid && emailID;
-                    }
-                }).subscribe(booleanObserver);
+                return usernameValid && mobileNoValid && emailID;
+            }).subscribe(booleanObserver);
     }
 
     Observer<Boolean> booleanObserver = new Observer<Boolean>() {

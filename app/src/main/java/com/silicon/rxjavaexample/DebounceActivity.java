@@ -24,115 +24,91 @@ import rx.observables.MathObservable;
 
 public class DebounceActivity extends AppCompatActivity {
 
+  private EditText mSearchBox;
 
-    private EditText mSearchBox;
+  @Override protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_main);
+    Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+    setSupportActionBar(toolbar);
+    mSearchBox = (EditText) findViewById(R.id.editText);
+    Observable<TextViewTextChangeEvent> textViewTextChangeEventObservable =
+        RxTextView.textChangeEvents(mSearchBox)
+            .debounce(5000, TimeUnit.MILLISECONDS)
+            .filter(textViewTextChangeEvent -> true)
+            .observeOn(AndroidSchedulers.mainThread());
+    textViewTextChangeEventObservable.subscribe(_getSearchObserver());
+  }
 
+  private Observer<TextViewTextChangeEvent> _getSearchObserver() {
+    return new Observer<TextViewTextChangeEvent>() {
+      @Override public void onCompleted() {
+      }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        mSearchBox = (EditText) findViewById(R.id.editText);
-        Observable<TextViewTextChangeEvent> textViewTextChangeEventObservable =
-                RxTextView.textChangeEvents(mSearchBox).
-                        debounce(5000, TimeUnit.MILLISECONDS).filter(new Func1<TextViewTextChangeEvent, Boolean>() {
-                    @Override
-                    public Boolean call(TextViewTextChangeEvent textViewTextChangeEvent) {
-                        return true;
+      @Override public void onError(Throwable e) {
+        Log.e(e.getLocalizedMessage(), "--------- Woops on error!");
+      }
 
-                    }
-                }).observeOn(AndroidSchedulers.mainThread());
-        textViewTextChangeEventObservable.subscribe(_getSearchObserver());
+      @Override public void onNext(TextViewTextChangeEvent onTextChangeEvent) {
+        Toast.makeText(DebounceActivity.this, onTextChangeEvent.text().toString(),
+            Toast.LENGTH_SHORT).show();
+      }
+    };
+  }
 
+  private void sampleRXJava() {
 
-    }
+    Subscriber subscriber = new Subscriber<Integer>() {
+      @Override public void onCompleted() {
 
-    private Observer<TextViewTextChangeEvent> _getSearchObserver() {
-        return new Observer<TextViewTextChangeEvent>() {
-            @Override
-            public void onCompleted() {
-            }
+        System.out.print("Completed");
+      }
 
-            @Override
-            public void onError(Throwable e) {
-                Log.e(e.getLocalizedMessage(), "--------- Woops on error!");
-            }
+      @Override public void onError(Throwable e) {
+        System.out.print("Throwable");
+      }
 
-            @Override
-            public void onNext(TextViewTextChangeEvent onTextChangeEvent) {
-                Toast.makeText(DebounceActivity.this, onTextChangeEvent.text().toString(), Toast.LENGTH_SHORT).show();
-            }
-        };
-    }
+      @Override public void onNext(Integer o) {
+        System.out.print("Next" + o);
+      }
+    };
+    Observable.just(1, 2, 3).subscribe(subscriber);
+    removingEvenNumbers();
+  }
 
-    private void sampleRXJava() {
+  private void removingEvenNumbers() {
+    Observable.just(1, 2, 3, 4, 5, 6) // add more numbers
+        .filter(integer -> {
+          int value = integer % 2;
+          return value == 1;
+        }).subscribe(new Subscriber<Integer>() {
+      @Override public void onCompleted() {
+        System.out.println("Complete!");
+      }
 
-        Subscriber subscriber = new Subscriber<Integer>() {
-            @Override
-            public void onCompleted() {
+      @Override public void onError(Throwable e) {
+      }
 
-                System.out.print("Completed");
-            }
+      @Override public void onNext(Integer value) {
+        System.out.println("onNext: " + value);
+      }
+    });
+    MathObservable.averageInteger(getInteger()).subscribe(new Observer<Integer>() {
+      @Override public void onCompleted() {
 
-            @Override
-            public void onError(Throwable e) {
-                System.out.print("Throwable");
-            }
+      }
 
-            @Override
-            public void onNext(Integer o) {
-                System.out.print("Next" + o);
-            }
-        };
-        Observable.just(1, 2, 3).subscribe(subscriber);
-        removingEvenNumbers();
+      @Override public void onError(Throwable e) {
 
-    }
+      }
 
-    private void removingEvenNumbers() {
-        Observable.just(1, 2, 3, 4, 5, 6) // add more numbers
-                .filter(integer -> {
-                    int value = integer % 2;
-                    return value == 1;
-                })
-                .subscribe(new Subscriber<Integer>() {
-                    @Override
-                    public void onCompleted() {
-                        System.out.println("Complete!");
-                    }
+      @Override public void onNext(Integer integer) {
 
-                    @Override
-                    public void onError(Throwable e) {
-                    }
+      }
+    });
+  }
 
-                    @Override
-                    public void onNext(Integer value) {
-                        System.out.println("onNext: " + value);
-                    }
-                });
-        MathObservable.averageInteger(getInteger()).subscribe(new Observer<Integer>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(Integer integer) {
-
-            }
-        });
-    }
-
-    private Observable<Integer> getInteger() {
-        return Observable.just(1, 2, 3, 4, 5);
-    }
-
-
+  private Observable<Integer> getInteger() {
+    return Observable.just(1, 2, 3, 4, 5);
+  }
 }

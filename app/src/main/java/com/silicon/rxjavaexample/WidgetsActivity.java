@@ -77,12 +77,6 @@ public class WidgetsActivity extends AppCompatActivity {
 
 
     private void printValues() {
-//        NumberFormat df = NumberFormat.getCurrencyInstance();
-//        dfs.setCurrencySymbol("USD ");
-//        dfs.setGroupingSeparator('.');
-//        dfs.setMonetaryDecimalSeparator('.');
-//        ((DecimalFormat) df).setDecimalFormatSymbols(dfs);
-//        Log.d(TAG, "printValues: " + df.format(34343.35353));
         Currency currency = Currency.getInstance("USD");
         DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
         decimalFormat.setCurrency(currency);
